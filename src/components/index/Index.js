@@ -7,13 +7,14 @@ import SearchCity from "../SearchCity/SearchCity";
 import CurrentWeather from "../CurrentWeather/CurrentWeather";
 import Forecast from "../Forecast/Forecast";
 import "./style.css";
+import { Container } from "react-bootstrap";
 
 const Index = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const [weather, setWeather] = useState(false);
   const [query, setQuery] = useState("");
-  const [search, setSearch] = useState("jakarta");
+  const [search, setSearch] = useState("");
   const [data, setData] = useState({});
   const [errorMessage, setErrorMessage] = useState({});
 
@@ -52,9 +53,9 @@ const Index = () => {
         setError(false);
       } catch (error) {
         setLoading(false);
+        setErrorMessage(error.response.data);
         setWeather(false);
         setError(true);
-        setErrorMessage(error.response.data);
       }
     };
     if (search !== "") {
@@ -67,37 +68,42 @@ const Index = () => {
   };
 
   return (
-    <div className="mt-5">
-      <SearchCity
-        query={query}
-        handleChange={handleChange}
-        handleSubmit={handleSubmit}
-      />
-      {loading && (
-        <div className="loaderWrapper">
-          <ReactLoading type="spinningBubbles" height={150} width={150} />
-          <div className="mt-5 d-inline-flex flex-row">
-            <h3>Loading</h3>
-            <div className="align-self-end">
-              <ReactLoading type="balls" height={25} width={25} />
+    <div className="App">
+      <Container className="mt-4">
+        <SearchCity
+          query={query}
+          handleChange={handleChange}
+          handleSubmit={handleSubmit}
+        />
+        {loading && (
+          <div className="loaderWrapper">
+            <ReactLoading type="spinningBubbles" height={150} width={150} />
+            <div className="mt-5 d-inline-flex flex-row">
+              <h3>Loading</h3>
+              <ReactLoading
+                type="balls"
+                height={25}
+                width={25}
+                className="align-self-end"
+              />
             </div>
           </div>
-        </div>
-      )}
-      {!loading && weather && (
-        <div className="mt-3" style={style}>
-          <CurrentWeather {...data} />
-          <Forecast forecast={data.forecast} />
-        </div>
-      )}
-      {!loading && error && (
-        <div style={style}>
-          <div className="errorWrapper">
-            <h1>{errorMessage.cod}</h1>
-            <h2>{errorMessage.message}</h2>
+        )}
+        {!loading && weather && (
+          <div className="mt-3" style={style}>
+            <CurrentWeather {...data} />
+            <Forecast forecast={data.forecast} />
           </div>
-        </div>
-      )}
+        )}
+        {!loading && error && (
+          <div style={style}>
+            <div className="errorWrapper">
+              <h1>{errorMessage.cod}</h1>
+              <h2>{errorMessage.message}</h2>
+            </div>
+          </div>
+        )}
+      </Container>
     </div>
   );
 };
